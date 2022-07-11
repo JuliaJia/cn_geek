@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: smyoa-ingress-httpserver
+  namespace: smyoa-apps-app1
+  annotations:
+    nginx.ingress.kubernetes.io/limit-rps: 1
+spec:
+  defaultBackend:
+    service:
+      name: otherapp-svc
+      port:
+        number: 80
+  rules:
+    - host: smyoa.com
+      http:
+        paths:
+          - path: /httpserver
+            pathType: Prefix
+            backend:
+              service:
+                name: httpserver-svc
+                port:
+                  number: 80

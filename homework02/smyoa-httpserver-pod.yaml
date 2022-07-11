@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "httpserver"
+  namespace: smyoa-apps-app1
+  labels:
+    app: "httpserver"
+spec:
+  containers:
+    - name: httpserver
+      image: "harbor.smyoa.com/baseimage/httpserver:latest"
+      resources:
+        requests:
+          cpu: 200m
+          memory: 200Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      ports:
+        - containerPort: 80
+      livenessProbe:
+        httpGet:
+          host: "127.0.0.1"
+          path: /heathz
+          port: 80
+          scheme: HTTP
+        periodSeconds: 5
+        successThreshold: 1
+        failureThreshold: 5
+      lifecycle:
+        preStop:
+          httpGet:
+            host: "127.0.0.1"
+            path: "/preStop"
+            port: 80
+            scheme: HTTP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: httpserver
+data:
+  loglevel: debug
