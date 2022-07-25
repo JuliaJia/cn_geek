@@ -2,7 +2,10 @@ package main
 
 import (
 	"log"
+	"math/rand"
+	"metrics"
 	"net/http"
+	"time"
 )
 
 func main() {
@@ -15,6 +18,10 @@ func main() {
 }
 
 func healthz(rw http.ResponseWriter, r *http.Request) {
+	timer := metrics.NewTimer()
+	defer timer.ObserveTotal()
+	randInt := rand.Intn(3000)
+	time.Sleep(time.Millisecond * time.Duration(randInt))
 	rw.Write([]byte("200"))
 }
 
